@@ -239,7 +239,7 @@ class QRPlatba
     /**
      * Přímé nastavení účtu v IBAN formátu
      */
-    public function setIBAN(string $iban): self
+    public function setIBAN(string $iban, string $swift = null): self
     {
         $iban = new Iban($iban);
         $validator = new Validator();
@@ -251,12 +251,21 @@ class QRPlatba
         }
 
         $normalizedIban = $iban->getNormalizedIban();
-        $this->spdKeys['ACC'] = $normalizedIban;
-        $this->sidKeys['ACC'] = $normalizedIban;
+
+        if (!empty($swift) && !self::validateBic($swift)) {
+            throw new QRPlatbaException("Invalid swift format.");
+        }
+
+        $this->spdKeys['ACC'] = $normalizedIban . (!empty($swift) ? "+$swift" : '');
+        $this->sidKeys['ACC'] = $normalizedIban . (!empty($swift) ? "+$swift" : '');
 
         return $this;
     }
 
+    public static function validateBic($swift)
+    {
+        return (bool)preg_match('/^[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}$/i', $swift);
+    }
 
     /**
      * Rozhodne zda-li se jedna o cislo uctu nebo IBAN a vrati vzdy spravne pripraveny IBAN
