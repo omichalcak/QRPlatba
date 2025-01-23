@@ -11,7 +11,7 @@ if (false === function_exists('bcmod')) {
      * @param $x
      * @param $y
      *
-     * @return int
+     * @return string
      *
      * @see https://stackoverflow.com/a/10626609
      */
