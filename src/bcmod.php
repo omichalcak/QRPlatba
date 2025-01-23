@@ -27,6 +27,6 @@ if (false === function_exists('bcmod')) {
             $mod = $a % $y;
         } while (strlen($x));
 
-        return (int)$mod;
+        return (string)$mod;
     }
 }
